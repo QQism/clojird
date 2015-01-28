@@ -126,7 +126,7 @@
   )
 
 (defn draw-pause-screen [context state { {width :width height :height} :resolution {play-button :play-button} :assets}]
-  (.setFillColor context 0 0 0 0.5)
+  (set! (.-fillStyle context) "rgba(0, 0, 0, 0.5)")
   (.fillRect context 0 0 width height)
   (set! (.-font context) "10pt Comic Sans MS")
   (set! (.-fillStyle context) "#FFFFFF")

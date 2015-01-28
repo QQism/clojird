@@ -36,7 +36,7 @@
              :play-button (read-image "resources/play-button.png")})
 
 (def game-settings (atom {:resolution {:width 550 :height 300}
-                          :debug true
+                          :debug false
                           :pause true
                           :map-speed 150
                           :pipe-margin-x 160
@@ -75,7 +75,7 @@
 
 (defn draw-image [context sprite x y]
   (.drawImage context sprite x y)
-  (.strokeRect context x y (.-width sprite) (.-height sprite)))
+  (if (:debug @game-settings) (.strokeRect context x y (.-width sprite) (.-height sprite))))
 
 (defn draw-rotated-image [context sprite x y angle]
   (.save context)

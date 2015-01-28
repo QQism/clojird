@@ -13,6 +13,6 @@ License
 
 Game source code is MIT licensed.
 
-Everything else belongs to their respectful owners.
+Everything else belong to their respectful owners.
 
-Image assets are originated from Dong Nguyen's Flappt Bird, though I stole them somewhere over Internet. Please don't sue me.
+Image assets are originated from Dong Nguyen's Flappy Bird, though I stole them somewhere over Internet. Please don't sue me.

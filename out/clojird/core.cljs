@@ -63,6 +63,7 @@
                               :x 200
                               :y 100
                               :y-velocity 0
+                              :dead false
                               }
                        :score 0
                        :background-color "#60B2BC"
@@ -137,6 +138,15 @@
   ;(draw-image context play-button (- (/ width 2) (/ (.-width play-button) 2)) (- (/ height 2) (/ (.-height play-button) 2)))
   )
 
+(defn draw-dead-screen [context state { {width :width height :height} :resolution}]
+  (set! (.-fillStyle context) "rgba(0, 0, 0, 0.5)")
+  (.fillRect context 0 0 width height)
+  (set! (.-font context) "10pt Comic Sans MS")
+  (set! (.-fillStyle context) "#FFFFFF")
+  (.fillText context "'z' time backward" (/ width 2.5) (* height 0.82))
+  (.fillText context "'x' time forward" (/ width 2.5) (* height 0.89))
+  )
+
 (defn draw-game [dt context state settings]
   (let [{{canvas-width :width canvas-height :height} :resolution pause :pause} settings]
     (clear-canvas context canvas-width canvas-height)
@@ -184,8 +194,9 @@
     nil))
 
 (defn toogle-game-pause [state settings]
-  ;(println "PAUSE")
-  (swap! settings #(assoc % :pause (not (:pause %)))))
+  ; Check if collision is happening, do not allow game resume
+  (if (= (:pause (bird-collisions (assoc @settings :pause false) @state 0)) false)
+    (swap! settings #(assoc % :pause (not (:pause %))))))
 
 (defn shift-history [state action]
   (if-let [target-state (deref (action @state))]

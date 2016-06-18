@@ -45,8 +45,8 @@
                           :last-timestamp 0
                           :dt 0
                           :gravity 0.00039
-                          :assets assets
-                          }))
+                          :assets assets}))
+
 
 (def game-state (atom {:land {:sprite (:land-sprite (:assets @game-settings))
                               :offset 0
@@ -63,13 +63,13 @@
                               :x 200
                               :y 100
                               :y-velocity 0
-                              :dead false
-                              }
+                              :dead false}
+
                        :score 0
                        :background-color "#60B2BC"
                        :next-state (atom nil)
-                       :prev-state (atom nil)
-                       }))
+                       :prev-state (atom nil)}))
+
 ;;
 ;; UI
 ;;
@@ -104,8 +104,8 @@
   (.translate context (- 0 offset) 0)
   ((fn [x]
      (draw-image context sprite x y)
-     (cond (and (<= (- x offset) (.-width sprite)) (> (.-width sprite) 0)) (recur (+ x (.-width sprite))))
-     ) x)
+     (cond (and (<= (- x offset) (.-width sprite)) (> (.-width sprite) 0)) (recur (+ x (.-width sprite)))))
+   x)
   (.restore context))
 
 (defn draw-pipes [context state settings]
@@ -115,16 +115,16 @@
 
 (defn draw-bird [context state settings]
   (let [{{sprite :sprite x :x y :y velocity :y-velocity} :bird} state
-        angle (velocity-to-angle velocity)
-        ]
-    (draw-rotated-image context sprite x y angle)
-    ))
+        angle (velocity-to-angle velocity)]
+
+    (draw-rotated-image context sprite x y angle)))
+
 
 (defn draw-score [context state { {width :width height :height} :resolution}]
   (set! (.-font context) "23pt Comic Sans MS")
   (set! (.-fillStyle context) "#FFFFFF")
-  (.fillText context (str (:score state)) (/ width 2) 50)
-  )
+  (.fillText context (str (:score state)) (/ width 2) 50))
+
 
 (defn draw-pause-screen [context state { {width :width height :height} :resolution {play-button :play-button} :assets}]
   (set! (.-fillStyle context) "rgba(0, 0, 0, 0.5)")
@@ -134,9 +134,9 @@
   (.fillText context "'z' time backward" (/ width 7) (* height 0.82))
   (.fillText context "'x' time forward" (/ width 7) (* height 0.89))
   (.fillText context "'Enter' Play/Pause/Resume" (/ width 2) (* height 0.82))
-  (.fillText context "'Space' Jump" (/ width 2) (* height 0.89))
+  (.fillText context "'Space' Jump" (/ width 2) (* height 0.89)))
   ;(draw-image context play-button (- (/ width 2) (/ (.-width play-button) 2)) (- (/ height 2) (/ (.-height play-button) 2)))
-  )
+
 
 (defn draw-dead-screen [context state { {width :width height :height} :resolution}]
   (set! (.-fillStyle context) "rgba(0, 0, 0, 0.5)")
@@ -144,8 +144,8 @@
   (set! (.-font context) "10pt Comic Sans MS")
   (set! (.-fillStyle context) "#FFFFFF")
   (.fillText context "'z' time backward" (/ width 2.5) (* height 0.82))
-  (.fillText context "'x' time forward" (/ width 2.5) (* height 0.89))
-  )
+  (.fillText context "'x' time forward" (/ width 2.5) (* height 0.89)))
+
 
 (defn draw-game [dt context state settings]
   (let [{{canvas-width :width canvas-height :height} :resolution pause :pause} settings]
@@ -156,8 +156,8 @@
     (draw-parallax context state settings :land)
     (if pause (draw-pause-screen context state settings))
     (draw-bird context state settings)
-    (draw-score context state settings)
-    ))
+    (draw-score context state settings)))
+
 
 
 ;;
@@ -168,15 +168,15 @@
   (let [max-velocity 0.25
         ;min-velocity -0.125
         max-angle 90
-        min-angle -30
-        ]
+        min-angle -30]
+
     (cond (<= velocity min-velocity) min-angle
           (>= velocity max-velocity) max-angle
           (> velocity 0) (/ (* velocity max-angle) max-velocity)
           ;(< velocity 0) (/ (* velocity min-angle) min-velocity)
-          :else min-angle
-          ))
-  )
+          :else min-angle)))
+
+
 
 (defn key-press [event state settings]
   """
@@ -258,10 +258,10 @@
 (defn update-pipes [state settings]
   (update-in state [:pipes] (fn [pipes]
                               (vec (map #(let [new-x (new-pipe-x % pipes settings)
-                                          new-y (new-pipe-y % pipes settings)
-                                          bird-x (:x (:bird state))
-                                          next-status (next-pipe-status % bird-x)]
-                                       (assoc % :x new-x :y new-y :status next-status))
+                                               new-y (new-pipe-y % pipes settings)
+                                               bird-x (:x (:bird state))
+                                               next-status (next-pipe-status % bird-x)]
+                                          (assoc % :x new-x :y new-y :status next-status))
                                       pipes)))))
 
 (defn next-pipe-status [{:keys [x status sprite] :as pipe} bird-x]
@@ -297,25 +297,25 @@
     (if (<= y 210)
       (assoc bird
              :y (+ (* velocity dt) (:y bird))
-             :y-velocity (+ velocity (* gravity dt))
-             ) bird)))
+             :y-velocity (+ velocity (* gravity dt)))
+      bird)))
 
 (defn update-bird-flipping [state settings dt]
   (update-in state [:bird] bird-flipping settings dt))
 
 (defn update-bird-gravity [state settings dt]
-  (update-in state [:bird] bird-gravity settings dt)
-  )
+  (update-in state [:bird] bird-gravity settings dt))
+
 
 (defn update-bird-jump [state settings dt]
-  (assoc-in state [:bird :y-velocity] -0.125)
-  )
+  (assoc-in state [:bird :y-velocity] -0.125))
+
 
 (defn bird-collisions [settings {bird :bird pipes :pipes} dt]
   (cond (bird-hit-ground? (:y bird)) (assoc settings :pause true)
         (bird-hit-pipe? bird pipes) (assoc settings :pause true)
-        :else settings)
-  )
+        :else settings))
+
 
 (defn bird-hit-ground? [bird-y] (> bird-y 210))
 
@@ -330,11 +330,11 @@
 (defn bird-rotated-vertices [bird]
   (let [{sprite :sprite x :x y :y velocity :y-velocity} bird
         rad-angle (* (velocity-to-angle velocity) (/ js/Math.PI 180))
-        vertices (bird-vertices bird)
-        ]
-    (map #(convert-rotated-vertices % [x y] rad-angle) vertices)
-    )
-  )
+        vertices (bird-vertices bird)]
+
+    (map #(convert-rotated-vertices % [x y] rad-angle) vertices)))
+
+
 
 (defn bird-vertices [bird]
   (let [{sprite :sprite x :x y :y} bird
@@ -360,8 +360,8 @@
       pivot-x)
    (+ (+ (* (- point-x pivot-x) (.sin js/Math rad-angle))
          (* (- point-y pivot-y) (.cos js/Math rad-angle)))
-      pivot-y)
-   ])
+      pivot-y)])
+
 
 
 (defn bird-pass-pipe [state]
@@ -371,8 +371,8 @@
                  (+ score (/
                            (count (filter #(= % :passing)
                                           (map :status pipes)))
-                           2)) ; there are 2 pipes at the same y-position
-                 ))))
+                           2)))))) ; there are 2 pipes at the same y-position
+
 
 (defn is-polygons-intersecting? [a-vertices b-vertices]
   (let [vertices (distinct (into a-vertices b-vertices))
@@ -385,10 +385,10 @@
         a-projections (map vector a-a-projections b-a-projections)
         b-projections (map vector a-b-projections b-b-projections)
         a-overlaps (map (fn [[projections1 projections2]]
-                       (projections-overlap? projections1 projections2))
+                         (projections-overlap? projections1 projections2))
                      a-projections)
         b-overlaps (map (fn [[projections1 projections2]]
-                       (projections-overlap? projections1 projections2))
+                         (projections-overlap? projections1 projections2))
                      b-projections)]
     (and (not-any? #(not %) a-overlaps) (not-any? #(not %) b-overlaps))))
 
@@ -401,12 +401,12 @@
     (fn [index vertex]
       (calculate-normal vertex
                         (nth vertices (mod (inc index) (count vertices)))))
-    vertices)
-  )
+    vertices))
+
 
 (defn polygon-projection-on-normal [vertices normal]
-  (map #(point-projection-on-normal % normal) vertices)
-  )
+  (map #(point-projection-on-normal % normal) vertices))
+
 
 (defn point-projection-on-normal [[x y] [normal-x normal-y]]
   (+ (* x normal-x) (* y normal-y)))
@@ -425,8 +425,8 @@
   (swap! state update-pipes settings)
   (swap! state update-bird-flipping settings dt)
   (swap! state update-bird-gravity settings dt)
-  (swap! state bird-pass-pipe settings dt)
-  )
+  (swap! state bird-pass-pipe settings dt))
+
 
 (defn random-pipe-up-y []
   (+ (rand-int 131) 100))
@@ -436,15 +436,15 @@
    :x x
    :y y
    :direction direction
-   :status :forward ; backward, :passing
-   })
+   :status :forward}) ; backward, :passing
+
 
 (defn generate-pipe-pair [state settings no]
   (let [{{width :width} :resolution margin-x :pipe-margin-x margin-y :pipe-margin-y} settings
         x (+ width (* margin-x no))
         up-y (random-pipe-up-y) ;70 - 220
-        down-y (- up-y margin-y); (- up-y 220)
-        ]
+        down-y (- up-y margin-y)]; (- up-y 220)
+
    (update-in state [:pipes]
               conj (generate-pipe settings :pipe-up x up-y) (generate-pipe settings :pipe-down x down-y))))
 
@@ -455,9 +455,9 @@
     (dotimes [no pairs-count] (swap! state generate-pipe-pair settings no))))
 
 (defn touch [e state settings]
-  (if-not (:pause @settings) (swap! state update-bird-jump settings (:dt @settings)))
+  (if-not (:pause @settings) (swap! state update-bird-jump settings (:dt @settings))))
   ;(println "Click X: " (- (.-pageX e) 8) " Y:" (- (.-pageY e) 8))
-  )
+
 
 (defn save-timestamp [settings timestamp dt]
   (assoc settings :last-timestamp timestamp :dt dt))
@@ -481,9 +481,9 @@
 (defn assets-loading [timestamp context state settings]
   (if (= @assets-loaded-count  @assets-count)
     (update timestamp context state settings)
-    (.requestAnimationFrame js/window #(assets-loading % context state settings))
-    )
-  )
+    (.requestAnimationFrame js/window #(assets-loading % context state settings))))
+
+
 
 (defn create-canvas [width height]
   (let [canvas (.createElement js/document "canvas")]
@@ -504,7 +504,7 @@
 
     (generate-pipes-pairs state @settings)
     ;(update last-timestamp context state settings)
-    (assets-loading last-timestamp context state settings)
-    ))
+    (assets-loading last-timestamp context state settings)))
+
 
 (main game-state game-settings)

@@ -5,7 +5,7 @@ Clojird
 Overview
 --------
 
-Clojird is a game with time manipulation is written in ClojureScript. It's actually a Flappy Bird clone with Braid inspired.
+Clojird is a game with time manipulation written in ClojureScript. It's actually a Flappy Bird clone with Braid inspired.
 I started to write this game to learn functional programming so the current code is pretty messy.
 
 License
